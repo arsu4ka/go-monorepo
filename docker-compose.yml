@@ -1,0 +1,38 @@
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  app1:
+    build:
+      context: .
+      dockerfile: ./deploy/app1/Dockerfile
+    depends_on:
+      - redis
+    env_file:
+      - .prod.env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    restart: unless-stopped
+
+  app2:
+    build:
+      context: .
+      dockerfile: ./deploy/app2/Dockerfile
+    ports:
+      - "8082:8082"
+    depends_on:
+      - redis
+    env_file:
+      - .prod.env
+    environment:
+      - APP2_PORT=8082
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    restart: unless-stopped
+
+networks:
+  default:
+    driver: bridge
