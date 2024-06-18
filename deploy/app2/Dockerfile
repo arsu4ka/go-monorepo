@@ -22,4 +22,6 @@ WORKDIR /app
 COPY --from=builder /app/bin/app2 /app/bin/app2
 
 RUN apt-get update -y && apt-get install ca-certificates -y
+
+EXPOSE 8082
 CMD ["/app/bin/app2"]
